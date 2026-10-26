@@ -133,6 +133,21 @@ class GradeCalc(unittest.TestCase):
                 self.g.safe_eval(bad, 1.0)
 
 
+class RunTests(unittest.TestCase):
+    def test_zero_tests_fail(self):
+        import run_tests
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(run_tests.run(d), 1)
+
+    def test_skip_fails(self):
+        import run_tests
+        with tempfile.TemporaryDirectory() as d:
+            (Path(d) / "test_x.py").write_text(
+                "import unittest\nclass T(unittest.TestCase):\n"
+                "    @unittest.skip('x')\n    def test_a(self): pass\n", encoding="utf-8")
+            self.assertEqual(run_tests.run(d), 1)
+
+
 class InstallCodex(unittest.TestCase):
     def test_copy_and_skip(self):
         import install_skills

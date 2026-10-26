@@ -74,11 +74,13 @@ python3 scripts/install_skills.py --link           # 복사 대신 링크(pull�
 
 ```
 python3 scripts/validate_repo.py
-python3 -m unittest discover -s tests
+python3 scripts/run_tests.py
 ```
 
 검사 항목: Claude·Codex·Grok 매니페스트 JSON, 버전 일치(`VERSION`), SKILL.md frontmatter와 참조 파일, 스크립트 문법, 민감 패턴.
 저장소에 둘 수 없는 용어는 로컬 파일에 적고 `--terms 파일`로 넘깁니다(환경변수 `MYWAY_BANNED_TERMS_FILE`도 가능). 그 파일은 커밋하지 않습니다.
+
+검증 현황과 미검증 항목은 [docs/VERIFICATION.md](docs/VERIFICATION.md)에 있습니다.
 
 ## 라이선스
 

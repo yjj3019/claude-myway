@@ -38,3 +38,6 @@ rhel-manual은 이름과 달리 RHEL 전용이 아니라 장문 DOCX 빌드 파�
 
 ## D-013 admission-helper 추가
 기존 개인 스킬 univ-admission-analysis를 영어 이름 admission-helper(진학 도우미)로 통합했다. 학생 정보는 저장소에 두지 않고 빈 프로필 서식에서 질문/답변으로 받는다. grade_calc.py의 환산식은 `eval` 대신 AST 기반으로 사칙연산과 `x`만 허용한다. 연도 의존 문구(학년도, 권역 목록)는 일반화했다.
+
+## D-014 AI-Harness 2026-10-26 업데이트 반영 범위
+가져온 것: 테스트 수 검증(0건·전체 skip은 실패, `scripts/run_tests.py`), 검증 현황표(`docs/VERIFICATION.md`), CLAUDE.md의 지침 충돌·검증 의미·승인 경계 규칙, CI 최소 권한. 가져오지 않은 것: phase-gate와 attestation, ToolBroker, 지식 그래프 평가, evidence-first-harness 스킬. 이 저장소에는 Phase 흐름과 훅·서브에이전트가 없고, 선택 도구는 측정 전에 도입하지 않는다는 원본 문서의 결론을 따랐다.
