@@ -1,0 +1,20 @@
+{
+  "name": "skill-myway",
+  "interface": {
+    "displayName": "myway"
+  },
+  "plugins": [
+    {
+      "name": "myway",
+      "source": {
+        "source": "local",
+        "path": "./plugins/myway"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

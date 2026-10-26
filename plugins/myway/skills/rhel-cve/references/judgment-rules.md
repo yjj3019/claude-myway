@@ -1,0 +1,70 @@
+# 판정 규칙
+
+## 1. product_name 정확 일치
+
+- RHEL 버전 판정은 `product_name`이 정확히 `Red Hat Enterprise Linux N`인 항목만 쓴다.
+- 아래는 별개 제품·스트림으로 구분해 기재한다.
+  - `Red Hat Enterprise Linux N.M Extended Update Support` / `… Update Services for SAP Solutions` / `… Advanced Mission Critical Update Support` — EUS·E4S·AUS 스트림
+  - `Red Hat Enterprise Linux 6/7 Extended Lifecycle Support` — ELS. 표준 판정에는 반영하지 않되, ELS 계약 서버는 실제 패치가 있을 수 있음을 명시
+  - `JBoss Core Services on RHEL 7`, `Red Hat Enterprise Linux AI`, `Ansible Automation Platform … for RHEL 8` — 별도 제품
+- 관심 버전 항목이 하나도 없으면 "영향 없음"이라 쓰지 않는다. 실제 존재하는 product_name 목록을 기재한다.
+
+## 2. epoch 제거
+
+모든 산출물(리포트, 요약 리스트, 대화 응답)에서 NVR의 epoch를 제거한다.
+
+```
+kernel-0:4.18.0-553.el8        →  kernel-4.18.0-553.el8
+firefox-0:140.12.0-1.el9_8     →  firefox-140.12.0-1.el9_8
+nmap-ncat-4:7.92-8.fc43        →  nmap-ncat-7.92-8.fc43
+```
+
+정규식: `re.sub(r'-(\d+):(?=\d)', '-', nvr)`. 사용자가 원문 대조를 요청한 검증 맥락에서만 raw 값을 병기한다.
+
+## 3. fix_state 어휘와 한국어 표기
+
+| 원문 | 리포트·요약 표기 | 의미 | 실무 함의 |
+|---|---|---|---|
+| (affected_release에 RHSA 존재) | 수정됨(Fixed) | 패치 발행 | 해당 NVR 이상으로 업데이트 |
+| Affected | 영향 있음(Affected) | 영향 확인, 패치 미발행 | 완화책 적용, 패치 대기 |
+| Fix deferred | 패치 보류(Fix deferred) | 영향 확인, 일정 미정 | 노출 축소로 대응 |
+| Will not fix | 패치 계획 없음(Will not fix) | 영향 확인, 수정 안 함 | 완화책 또는 구성 변경 |
+| Out of support scope | 지원 범위 밖(Out of support scope) | 지원 종료 브랜치, 평가 안 함 | "영향 없음" 아님. 마이그레이션 근거 |
+| Under investigation | 조사 중(Under investigation) | 평가 진행 중 | 재확인 필요 |
+| Not affected | 영향 없음(Not affected) | 평가 결과 해당 없음 | 조치 불필요 |
+
+CSAF justification 번역: `vulnerable_code_not_present` → 취약한 코드 없음, `component_not_present` → 컴포넌트 없음, `vulnerable_code_not_in_execute_path` → 실행 경로에 없음, `inline_mitigations_already_exist` → 기존 완화 조치 존재.
+
+같은 칸에 Out of support scope와 Not affected를 함께 넣지 않는다.
+
+## 4. JSON·XML CONFLICT
+
+1. 두 값이 다르면 CONFLICT로 표시하고 양쪽 값을 모두 보고한다.
+2. 기본 채택은 JSON. 사용자가 소스를 지정하면 그 소스로 판정한다.
+3. 산출물에는 채택 값을 쓰고 불일치를 드러낸다(리포트는 5번 표 "근거" 컬럼에 "JSON 기준, XML은 {값}", 요약 리스트는 비고).
+4. Statement, affected_release의 RHSA 유무를 방증으로 제시한다.
+5. 확정이 필요하면 Red Hat Product Security 문의를 권고한다.
+
+## 5. Statement·Description 처리
+
+- Statement 산문만으로 제품 상태를 추정하지 않는다. 방증으로만 쓴다.
+- Description은 영문 원문을 보관하고, 한정어("statically linked", "unprivileged", 옵션 플래그, 조건절)를 번역에서 빠뜨리지 않는다.
+- Red Hat Description과 CNA(cve.org) Description이 다르면 Red Hat 원문 기준으로 쓰고 CNA 원문의 구체 정보(함수명·파일명)는 보강 용도로 쓴다.
+
+## 6. 미추적과 영향 없음
+
+| 상황 | 표기 |
+|---|---|
+| Red Hat CVE 페이지·Hydra 모두 NOTFOUND, RHEL 무관 근거 있음 | Red Hat 미추적 — 근거: … |
+| NOTFOUND, 근거 불충분 | 미확인 — Red Hat 포털 직접 확인 필요 |
+| EXISTS, 모든 package_state가 Not affected | 영향 없음(Not affected) |
+| EXISTS, package_state·affected_release 모두 비어 있음 | 평가 데이터 없음 |
+
+## 7. 검증 질문 모드
+
+- **영향 여부**: 해당 product_name 항목의 fix_state와 affected_release를 근거로 "해당/비해당 + 근거"를 답한다.
+- **설명문 대조**: Red Hat 원문과 구 단위로 비교해 누락·추가된 한정어를 지적한다. 일치하는 부분도 밝혀 과장하지 않는다.
+- **버전 대조**: `web_search "{NVR}" RHSA`로 RHSA·제품·발행일을 특정하고 errata SRPM 목록으로 재확인한다. epoch 차이는 불일치로 보지 않는다.
+- **외부 자료 검증**: 사용자가 가져온 자료(워크시트, 타 AI 산출물)의 주장은 직접 재조회해 검증한다. 불일치 시 어느 쪽이 틀렸는지 근거와 함께 보고한다.
+- **설명만 주어진 경우**: 핵심 용어(함수명, 컴포넌트, 조건절)로 검색해 후보 CVE를 찾고 Red Hat 원문으로 확정한다. 후보가 여럿이면 제시하고 사용자에게 확정을 요청한다.
+- 답은 "일치/불일치(해당/비해당) + 근거"로 짧게. 얼버무리지 않는다.

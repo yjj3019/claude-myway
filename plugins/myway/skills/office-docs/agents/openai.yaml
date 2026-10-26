@@ -1,0 +1,3 @@
+interface:
+  display_name: "Office 문서"
+  short_description: "PPTX·DOCX·XLSX 서식 규격 적용"

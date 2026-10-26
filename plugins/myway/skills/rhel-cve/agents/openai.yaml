@@ -1,0 +1,3 @@
+interface:
+  display_name: "RHEL CVE"
+  short_description: "CVE 영향도 조사와 리포트"
