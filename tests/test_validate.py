@@ -118,17 +118,32 @@ class RhelCveExample(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stdout)
 
 
+class GradeCalc(unittest.TestCase):
+    def setUp(self):
+        sys.path.insert(0, str(ROOT / "plugins/myway/skills/admission-helper/scripts"))
+        import grade_calc
+        self.g = grade_calc
+
+    def test_safe_eval_arithmetic(self):
+        self.assertAlmostEqual(self.g.safe_eval("930+70*x/9.8", 9.8), 1000.0)
+
+    def test_safe_eval_rejects_code(self):
+        for bad in ("__import__('os').getcwd()", "x.__class__", "open('f')", "[1]"):
+            with self.assertRaises(Exception):
+                self.g.safe_eval(bad, 1.0)
+
+
 class InstallCodex(unittest.TestCase):
     def test_copy_and_skip(self):
         import install_skills
         with tempfile.TemporaryDirectory() as d:
             done, skipped = install_skills.install(d)
-            self.assertEqual(len(done), 4)
+            self.assertEqual(len(done), 5)
             self.assertTrue((Path(d) / "writing" / "SKILL.md").is_file())
             done2, skipped2 = install_skills.install(d)
-            self.assertEqual((done2, len(skipped2)), ([], 4))
+            self.assertEqual((done2, len(skipped2)), ([], 5))
             done3, _ = install_skills.install(d, force=True)
-            self.assertEqual(len(done3), 4)
+            self.assertEqual(len(done3), 5)
 
     def test_main_target_grok_uses_dest(self):
         import install_skills

@@ -1,12 +1,13 @@
 # skill-myway
 
-개인 작업 흐름을 하나로 묶은 Claude Code·Codex·Grok Build 겸용 플러그인 마켓플레이스입니다. 플러그인 `myway` 하나에 스킬 네 개가 들어 있습니다.
+개인 작업 흐름을 하나로 묶은 Claude Code·Codex·Grok Build 겸용 플러그인 마켓플레이스입니다. 플러그인 `myway` 하나에 스킬 다섯 개가 들어 있습니다.
 
 | 스킬 | 용도 |
 |---|---|
 | `writing` | 한국어 블로그·기술 기고·포털 게시글 작성과 편집. 공통 기준 하나에 프로필 셋(개인 블로그, 기술 기고, 포털 게시글) |
 | `office-docs` | PPTX·DOCX·XLSX 작성 규격(브랜드 값은 프로필로 분리)과 정적 목차가 있는 장문 DOCX 빌드 |
 | `rhel-cve` | RHEL CVE 영향도 분석과 6단계 보고서 |
+| `admission-helper` | 대학 모집요강을 읽고 학생부 성적을 산출식에 대입해 지원 가능 여부 판정(진학 도우미) |
 | `devlog` | 프로젝트 개발 이력 누적 기록(Notion, 미연결 시 SESSION_LOG.md) |
 
 ## 설치
@@ -36,7 +37,7 @@ codex plugin marketplace upgrade skill-myway
 codex plugin remove myway@skill-myway
 ```
 
-codex-cli 0.164.0에서 로컬 경로로 `marketplace add`, `plugin add`, 스킬 4개 로드(`myway:<스킬>`), `plugin remove`까지 확인했습니다. `upgrade`는 Git 소스 마켓플레이스에만 동작합니다.
+codex-cli 0.164.0에서 로컬 경로로 `marketplace add`, `plugin add`, 스킬 5개 로드(`myway:<스킬>`), `plugin remove`까지 확인했습니다. `upgrade`는 Git 소스 마켓플레이스에만 동작합니다.
 
 **Grok Build**
 

@@ -11,7 +11,7 @@
         "type": "local",
         "path": "./plugins/myway"
       },
-      "description": "한국어 글쓰기 편집, 브랜드 프로필 기반 Office 문서, RHEL CVE 리포트, 장문 DOCX 매뉴얼 빌드, 개발 이력 기록",
+      "description": "한국어 글쓰기 편집, 브랜드 프로필 기반 Office 문서, RHEL CVE 리포트, 장문 DOCX 매뉴얼 빌드, 대입 요강 분석, 개발 이력 기록",
       "category": "productivity",
       "keywords": [
         "korean",
@@ -23,7 +23,7 @@
         "cve",
         "devlog"
       ],
-      "version": "1.3.1",
+      "version": "1.4.0",
       "author": {
         "name": "yjj3019"
       }

@@ -5,16 +5,16 @@
   },
   "metadata": {
     "description": "한국어 글쓰기, 업무 문서, RHEL CVE 조사, 운영매뉴얼 빌드, 개발 이력 기록 스킬 모음",
-    "version": "1.3.1"
+    "version": "1.4.0"
   },
   "plugins": [
     {
       "name": "myway",
       "source": "./plugins/myway",
-      "description": "한국어 글쓰기 편집, 브랜드 프로필 기반 Office 문서, RHEL CVE 리포트, 장문 DOCX 매뉴얼 빌드, 개발 이력 기록",
-      "version": "1.3.1",
+      "description": "한국어 글쓰기 편집, 브랜드 프로필 기반 Office 문서, RHEL CVE 리포트, 장문 DOCX 매뉴얼 빌드, 대입 요강 분석, 개발 이력 기록",
+      "version": "1.4.0",
       "category": "productivity",
-      "keywords": ["korean", "writing", "docx", "pptx", "xlsx", "rhel", "cve", "devlog"]
+      "keywords": ["korean", "writing", "docx", "pptx", "xlsx", "rhel", "cve", "devlog", "admission"]
     }
   ]
 }
