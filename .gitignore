@@ -4,3 +4,4 @@ node_modules/
 .terms.local
 /brand-profile.md
 .DS_Store
+/.claude/
