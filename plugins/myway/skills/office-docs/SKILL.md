@@ -5,6 +5,8 @@ description: 사내 표준 서식이나 브랜드 규격에 맞춰 PowerPoint(.p
 
 # office-docs
 
+If Windows PowerShell output is garbled, retry with `chcp 65001` followed by `Get-Content -Encoding UTF8` in the same command. Do not set `[Console]::OutputEncoding`; it can fail in constrained mode. If output remains unreadable, report the limitation.
+
 Office 산출물에 일관된 서식을 입히는 디자인 레이어. 파일을 만들고 고치는 메커니즘은 내장 `pptx` / `docx` / `xlsx` 스킬이 맡고, 이 스킬은 무엇을 어떤 색·폰트·레이아웃으로 낼지 정한다.
 
 ## 0. 한글 파일 읽기
