@@ -64,6 +64,19 @@ class ValidateRepo(unittest.TestCase):
         p.write_text(p.read_text(encoding="utf-8").replace(VER, "0.0.1"), encoding="utf-8")
         self.assertTrue(any("codex" in e for e in self.errs()))
 
+    def test_codex_plugin_manifest_missing(self):
+        (self.r / "plugins/myway/.codex-plugin/plugin.json").unlink()
+        self.assertTrue(any("codex" in e.lower() for e in self.errs()))
+
+    def test_codex_plugin_skills_path_invalid(self):
+        p = self.r / "plugins/myway/.codex-plugin/plugin.json"
+        meta = json.loads(p.read_text(encoding="utf-8"))
+        for skills in (None, "", [], "./missing"):
+            with self.subTest(skills=skills):
+                meta["skills"] = skills
+                p.write_text(json.dumps(meta), encoding="utf-8")
+                self.assertTrue(any("skills" in e for e in self.errs()))
+
     def test_codex_marketplace_bad_path(self):
         p = self.r / ".agents/plugins/marketplace.json"
         p.write_text(p.read_text(encoding="utf-8").replace("./plugins/myway", "./nope"), encoding="utf-8")

@@ -1,6 +1,6 @@
 {
   "name": "myway",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "description": "한국어 글쓰기 편집, 브랜드 프로필 기반 Office 문서, RHEL CVE 리포트, 장문 DOCX 매뉴얼 빌드, 대입 요강 분석, 개발 이력 기록",
   "author": {
     "name": "yjj3019"

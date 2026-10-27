@@ -105,13 +105,16 @@ def check_manifests(root, errors):
             if version and val != version:
                 errors.append(f"버전 불일치: {label}={val}, VERSION={version}")
         cx = pdir / ".codex-plugin" / "plugin.json"
-        if cx.is_file():
+        if not cx.is_file():
+            errors.append(f"{src}: .codex-plugin/plugin.json 없음")
+        else:
             cm = read_json(cx, errors) or {}
             if cm.get("name") != name:
                 errors.append(f"{cx}: name '{cm.get('name')}' != '{name}'")
             if version and cm.get("version") != version:
                 errors.append(f"버전 불일치: codex plugin.json={cm.get('version')}, VERSION={version}")
-            if not (pdir / str(cm.get("skills", "")).lstrip("./")).is_dir():
+            skills = cm.get("skills")
+            if not isinstance(skills, str) or not skills.strip().lstrip("./") or not (pdir / skills.lstrip("./")).is_dir():
                 errors.append(f"{cx}: skills 경로 없음")
         plugin_dirs.append(pdir)
     check_codex_marketplace(root, [e.get("name") for e in plugins], errors)
