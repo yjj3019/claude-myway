@@ -2,6 +2,8 @@
 
 모든 모드 공통. 순서대로 시도하고, 실패한 단계는 실패 사실을 기록한다.
 
+RHSB가 입력이면 RHSB 본문을 먼저 확인해 포함된 CVE와 RHSA를 식별한다. CVE가 입력이면 RHSB 존재 여부를 확인한다. 접근하지 못한 RHSB의 범위는 추측하지 않는다.
+
 ## 0. 환경별 조회 방법 (먼저 읽을 것)
 
 ### CLI 에이전트 (Claude Code, Codex, Grok 등)
@@ -96,9 +98,9 @@ XML  : https://access.redhat.com/hydra/rest/securitydata/cve/{CVE-ID}.xml
 
 `https://access.redhat.com/errata/{RHSA-ID}` — 발행일(Issued), 대상 제품, SRPM NVR 확인.
 
-광범위 배포 CVE(RHSA 10개 초과: kernel, openssl 등):
+광범위 배포 CVE(RHSA 20개 초과: kernel, openssl 등):
 - 메이저 버전별 기본(main) 스트림 RHSA 1개씩만 확정한다.
-- 나머지는 Hydra affected_release 값을 그대로 쓰되 errata 미확인임을 대화 응답에 적는다.
+- 나머지는 Hydra affected_release 값을 그대로 쓰되 errata 미확인과 줄인 범위를 리포트와 대화 응답에 적는다.
 - kpatch(라이브 패치) RHSA와 kernel 패키지 RHSA를 구분한다.
 
 ## 5. EPSS (필수)
@@ -142,5 +144,5 @@ KEV 등재는 위험도의 하한선이다. 미등재라도 PoC 공개, CISA SSV
 - 산출물 출처에는 **실제로 조회에 성공한 URL**을 적는다. 조회하지 않은 URL을 관례적으로 적지 않는다.
 - EPSS를 미러로 폴백했으면 미러 URL을, api.first.org로 받았으면 API URL을 적는다.
 - KEV는 스크립트가 받은 raw.githubusercontent.com URL을 적는다.
-- Hydra·CSAF·errata·RHSB, 대체 소스(OpenCVE, OSV 등)는 리포트 출처 1번(Red Hat CVE 페이지) 아래 하위 항목으로 실제 URL을 적는다. 대체 소스는 "(대체 소스, 수집 시점 YYYY-MM-DD)"를 붙인다.
-- 조회를 시도했으나 실패한 URL은 출처에 적지 않고 대화 응답에만 밝힌다.
+- Hydra·CSAF·errata·RHSB, 대체 소스(OpenCVE, OSV 등)는 참고문서에 실제로 읽은 URL을 적는다. 대체 소스는 "(대체 소스, 수집 시점 YYYY-MM-DD)"를 붙인다.
+- 조회를 시도했으나 실패한 문서와 그 영향은 리포트 4장과 대화 응답에 밝힌다. 접근하지 못한 URL은 조회한 출처로 나열하지 않는다.

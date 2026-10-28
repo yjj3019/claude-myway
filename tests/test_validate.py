@@ -130,6 +130,30 @@ class RhelCveExample(unittest.TestCase):
             r = subprocess.run([sys.executable, str(d / "scripts/check_report.py"), str(f)], capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stdout)
 
+    def test_report_checker_rejects_structural_errors(self):
+        import importlib.util
+        d = ROOT / "plugins/myway/skills/rhel-cve"
+        spec = importlib.util.spec_from_file_location("cve_report_check", d / "scripts/check_report.py")
+        checker = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(checker)
+        example = (d / "references/report-example.md").read_text(encoding="utf-8-sig")
+        body = example.split("\n<!-- REPORT START -->\n", 1)[1]
+        with tempfile.TemporaryDirectory() as td:
+            report = Path(td) / "report.md"
+            def errors(text):
+                report.write_text(text, encoding="utf-8")
+                return checker.check(report)
+            self.assertEqual(errors(body.replace("CVE-2099-00001 -", "CVE-2099-00001, CVE-2099-00002 -", 1)), [])
+            self.assertEqual(errors(body.replace("2099-08-10 기준 )", "99/08/10 기준 )").replace(checker.NOTICE, checker.LEGACY_NOTICE)), [])
+            for changed in (
+                body.replace("### 3. 완화 방법(Mitigation)", "### 3. 기타"),
+                body.replace("Fixed Package | RHSA", "Package | RHSA"),
+                body.replace(checker.NOTICE, "주의 문구 없음"),
+                body.replace("2099-08-10 기준 )", "YYYY-MM-DD 기준 )"),
+                body.replace("| RHEL 9 | 미확인 | examplepkg | 미확인 | 미확인 | 미확인 | 가상 데이터 |", "| RHEL 9 | 미확인 |"),
+            ):
+                self.assertTrue(errors(changed))
+
 
 class GradeCalc(unittest.TestCase):
     def setUp(self):

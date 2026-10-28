@@ -1,23 +1,24 @@
 ---
 name: rhel-cve
-description: Red Hat/RHEL CVE를 Red Hat CVE 페이지·Hydra API·CSAF/VEX·RHSA와 EPSS·CISA KEV로 조사해 고정 형식 한국어 결과물을 만든다. CVE 1건은 6단계 상세 리포트(CVE-YYYY-NNNNN_리포트.md), 2건 이상은 건별 요약 목록. RHEL 버전 영향 여부·fix 버전·RHSA 일치 검증에도 쓴다. 메시지에 CVE ID가 있거나 RHEL 취약점 점검, CVE 리포트, 영향도 판정, fix_state, RHSA, EPSS, KEV를 언급하면 적용한다.
+description: Red Hat/RHEL CVE와 RHSB를 조사해 Confluence용 한국어 보안 리포트를 작성한다. CVE 한 건·여러 건 또는 RHSB의 영향 제품, fix_state, 수정 버전, RHSA와 근거를 확인한다. RHEL 취약점 점검, CVE 리포트, 영향도 판정, EPSS, KEV 요청에도 사용한다.
 ---
 
 # Red Hat CVE 조사 및 리포트
 
-고정 리포트와 조사·검증을 하나로 합친 스킬. 데이터 수집·판정 로직은 하나, 산출물은 입력 형태에 따라 3가지.
+고정 리포트와 조사·검증을 하나로 합친 스킬. 보고서 요청은 단건·다건 또는 RHSB를 한 파일로 작성한다.
 
 ## 1. 모드 판별 (입력 기준, 표현 무관)
 
 | 입력 | 모드 | 산출물 | 읽을 파일 |
 |---|---|---|---|
-| CVE ID 1개 또는 Red Hat CVE URL 1개 | 단건 리포트 | `CVE-YYYY-NNNNN_리포트.md` | data-sourcing, judgment-rules, report-format, report-example |
-| CVE ID 2개 이상 (목록, 파일, 붙여넣기) | 다건 요약 | `CVE_요약_YYYYMMDD_{N}건.md` | data-sourcing, judgment-rules, batch-summary |
+| CVE ID 1개 또는 Red Hat CVE URL | 리포트 | `CVE-YYYY-NNNNN_리포트.md` | data-sourcing, judgment-rules, report-format, report-example |
+| CVE ID 여러 개 또는 RHSB URL | 통합 리포트 | `RHEL_CVE_리포트_YYYYMMDD.md` | data-sourcing, judgment-rules, report-format, report-example |
+| 사용자가 다건 요약 목록을 명시적으로 요청 | 다건 요약 | `CVE_요약_YYYYMMDD_{N}건.md` | data-sourcing, judgment-rules, batch-summary |
 | 특정 질문 ("RHEL 8 영향 있어?", "이 버전이 수정 버전 맞아?", "이 설명 무슨 CVE야?") | 검증 답변 | 대화 응답 (파일 없음) | data-sourcing, judgment-rules |
 
-- "분석해줘", "알려줘", "리포트" 등 표현과 관계없이 CVE ID 개수로 모드를 정한다.
+- RHSB URL이면 먼저 원문에서 관련 CVE와 RHSA를 확인한다. 문서에 접근할 수 없으면 범위를 추측하지 않는다.
 - 검증 질문이 CVE ID 1개와 함께 오면 질문에 먼저 답한다. 리포트는 사용자가 원할 때만 이어서 만든다.
-- 다건 입력은 중복 제거 후 고유 건수로 판단한다. 중복 제거 결과 1건이면 단건 리포트.
+- 다건 입력은 중복을 제거한다. 중복 제거 결과 1건이면 단건 리포트.
 - 사용자가 대상 RHEL 버전을 지정하면(예: "RHEL 6·7 기준") 모든 판정을 그 버전으로 한정한다.
 
 ## 2. 실행 환경
@@ -34,7 +35,7 @@ description: Red Hat/RHEL CVE를 Red Hat CVE 페이지·Hydra API·CSAF/VEX·RHS
 2. `references/data-sourcing.md` 순서대로 수집
 3. `references/judgment-rules.md` 규칙으로 판정
 4. 모드별 산출물 작성
-5. 검증: 단건 리포트는 `scripts/check_report.py` 통과 필수
+5. 검증: 통합·단건 리포트는 `scripts/check_report.py` 통과 후 값과 출처를 수동 대조한다.
 6. 대화 응답에 "값별 출처·수집 시점"과 미확인 항목을 명시
 
 ## 4. 절대 규칙 (요약 — 상세는 references)
@@ -51,9 +52,7 @@ description: Red Hat/RHEL CVE를 Red Hat CVE 페이지·Hydra API·CSAF/VEX·RHS
 - 출처에는 실제로 조회한 URL을 적는다. 조회하지 않은 URL을 관례적으로 적지 않는다.
 - 2차 소스(OpenCVE, OSV 등)로 대체한 값은 대화 응답에 소스와 수집 시점을 밝힌다.
 
-**리포트 형식** — `references/report-format.md`가 원본이며 동결 상태.
-- 사용자가 "스킬/규칙/포맷을 수정해줘"라고 명시하지 않는 한 형식을 바꾸지 않는다.
-- 규칙과 맞지 않는 상황이 생기면 임의 판단하지 말고 사용자에게 먼저 확인한다.
+**리포트 형식** — `references/report-format.md`의 Confluence용 제목·섹션·표 순서를 따른다. 확인되지 않은 데이터는 임의로 채우지 않는다.
 
 **조용한 생략 금지**
 - RHSA 커버리지 축소, 소스 접근 실패, CONFLICT, 2차 소스 사용은 반드시 드러낸다.
@@ -76,11 +75,11 @@ description: Red Hat/RHEL CVE를 Red Hat CVE 페이지·Hydra API·CSAF/VEX·RHS
 
 - `references/data-sourcing.md` — 소스 우선순위, 수집 절차, web_fetch 우회, verbatim 프롬프트
 - `references/judgment-rules.md` — fix_state 어휘·번역, product_name, CONFLICT, 미추적 판별, 검증 질문 처리
-- `references/report-format.md` — 단건 리포트 동결 규칙 (원본)
+- `references/report-format.md` — 단건·다건 Confluence 리포트 형식
 - `references/report-example.md` — 규칙에 맞춘 완성본 예시
 - `references/batch-summary.md` — 다건 요약 형식, 서브에이전트 배치, 검산식
 - `scripts/epss_kev.py` — EPSS(api.first.org → 미러 폴백)·KEV 일괄 조회 (JSON 출력, 표준 라이브러리만 사용)
-- `scripts/check_report.py` — 단건 리포트 규칙 자동 검사
+- `scripts/check_report.py` — 리포트 구조 자동 검사 (사실 검증은 별도)
 
 ## 특정 정보가 필요할 때
 

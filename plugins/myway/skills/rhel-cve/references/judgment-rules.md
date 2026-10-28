@@ -41,7 +41,7 @@ CSAF justification 번역: `vulnerable_code_not_present` → 취약한 코드 �
 
 1. 두 값이 다르면 CONFLICT로 표시하고 양쪽 값을 모두 보고한다.
 2. 기본 채택은 JSON. 사용자가 소스를 지정하면 그 소스로 판정한다.
-3. 산출물에는 채택 값을 쓰고 불일치를 드러낸다(리포트는 5번 표 "근거" 컬럼에 "JSON 기준, XML은 {값}", 요약 리스트는 비고).
+3. 산출물에는 채택 값을 쓰고 불일치를 드러낸다(리포트는 패키지 표의 "비고" 또는 4장에 "JSON 기준, XML은 {값}", 요약 리스트는 비고).
 4. Statement, affected_release의 RHSA 유무를 방증으로 제시한다.
 5. 확정이 필요하면 Red Hat Product Security 문의를 권고한다.
 
